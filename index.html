@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulso Deportivo</title>
+    
+    <link rel="icon" href="LOGO PULSO DEPORTIVO.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --color-verde: #27ae60;
+            --color-azul: #0d6efd;
+            --color-fondo: #fcfbfa;
+            --color-texto: #111;
+            --fuente-titulos: 'Playfair Display', serif;
+            --fuente-texto: 'Montserrat', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--fuente-texto); background-color: var(--color-fondo); color: var(--color-texto); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+
+        /* ===== CLASE PARA OCULTAR VISTAS ===== */
+        .oculto { display: none !important; }
+
+        /* ===== HEADER Y NAVEGACIÓN ===== */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; border-bottom: 5px solid #000; background-color: #fff; }
+        
+        .logo-container { cursor: pointer; display: flex; align-items: center; }
+        .imagen-logo { max-height: 95px; width: auto; object-fit: contain; } 
+
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; cursor: pointer; }
+        nav a.activo { color: var(--color-verde); }
+        
+        .btn-suscribete { background-color: var(--color-azul); color: #fff; border: 3px solid #000; padding: 10px 20px; font-weight: 700; font-size: 12px; text-transform: uppercase; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: transform 0.1s; }
+        .btn-suscribete:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+
+        /* ===== SECCIÓN PRINCIPAL ===== */
+        main { max-width: 1200px; margin: 40px auto; padding: 0 5%; min-height: 60vh; }
+        
+        .banner-logo-central { display: flex; justify-content: center; align-items: center; margin-bottom: 50px; padding-bottom: 10px; }
+        .logo-gigante { max-height: 200px; width: auto; object-fit: contain; }
+
+        /* ===== GRID DE NOTICIAS (Tarjetas) ===== */
+        .grid-noticias { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-bottom: 60px; }
+        .tarjeta-noticia { display: flex; flex-direction: column; cursor: pointer; transition: opacity 0.3s; height: 100%; }
+        .tarjeta-noticia:hover { opacity: 0.8; }
+        .imagen-noticia { width: 100%; height: 350px; object-fit: cover; border: 1px solid #ddd; margin-bottom: 15px; }
+        .meta-info { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+        .etiqueta { background-color: var(--color-verde); color: #fff; padding: 5px 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .fecha { font-size: 12px; color: #666; }
+        .titulo-noticia { font-family: var(--fuente-titulos); font-size: 28px; font-weight: 900; line-height: 1.2; margin-bottom: 10px; }
+        .descripcion-noticia { font-size: 14px; color: #444; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; }
+        
+        .autor-tarjeta { font-size: 11px; font-weight: 700; color: var(--color-azul); text-transform: uppercase; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
+
+        /* ===== LISTA DE NOTICIAS ENUMERADA ===== */
+        .seccion-lista { border-top: 3px solid #000; border-bottom: 3px solid #000; padding: 10px 0; margin-bottom: 40px; }
+        .fila-noticia { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px dotted #ccc; transition: background-color 0.2s; cursor: pointer; }
+        .fila-noticia:hover { background-color: #f5f5f5; }
+        .fila-noticia:last-child { border-bottom: none; }
+        .numero-lista { font-size: 12px; color: #888; width: 40px; font-weight: 600; }
+        .etiqueta-lista { background-color: var(--color-verde); color: #fff; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-right: 20px; width: 100px; text-align: center; letter-spacing: 0.5px; }
+        .titulo-lista { font-weight: 700; font-size: 14px; flex-grow: 1; padding-right: 20px; }
+        .fecha-lista { font-size: 11px; color: #888; white-space: nowrap; }
+
+        /* ===== DISEÑO DE LA NOTICIA COMPLETA ===== */
+        .articulo-completo { max-width: 800px; margin: 0 auto; padding-top: 20px; }
+        
+        .btn-volver { background: #fff; color: #111; padding: 12px 24px; border: 3px solid #000; font-family: var(--fuente-texto); font-weight: 700; font-size: 13px; text-transform: uppercase; cursor: pointer; margin-bottom: 40px; display: inline-flex; align-items: center; gap: 10px; box-shadow: 4px 4px 0px #000; transition: all 0.2s; }
+        .btn-volver:hover { background: var(--color-verde); color: #fff; transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; }
+        .btn-volver:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+
+        .articulo-completo h1 { font-family: var(--fuente-titulos); font-size: 42px; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
+        
+        .autor-barra { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #666; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 10px 0; margin-bottom: 30px; }
+        .autor-nombre { color: #111; }
+        .autor-separador { color: #ccc; font-weight: normal; }
+
+        .articulo-completo .imagen-principal { width: 100%; height: auto; max-height: 480px; object-fit: cover; margin-bottom: 30px; border: 1px solid #ddd; }
+        
+        /* ESTILO NUEVO: Botón para el Video de Drive */
+        .btn-video { display: inline-block; background-color: var(--color-azul); color: #fff; padding: 15px 30px; font-family: var(--fuente-texto); font-weight: 700; font-size: 14px; text-transform: uppercase; text-align: center; border: 3px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 30px; transition: all 0.2s; text-decoration: none; }
+        .btn-video:hover { background-color: #111; color: #fff; transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; }
+        .btn-video:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+
+        .articulo-completo .cuerpo-texto { font-size: 18px; line-height: 1.8; color: #333; text-align: justify; }
+        .articulo-completo .cuerpo-texto p { margin-bottom: 25px; }
+
+        /* ===== FOOTER ===== */
+        footer { background-color: #e5e5e5; padding: 30px 5%; margin-top: 40px; }
+        .footer-caja { border: 3px solid #000; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: #e5e5e5; }
+        
+        .logo-footer { display: flex; align-items: center; justify-content: center; }
+        .imagen-logo-footer { max-height: 50px; width: auto; object-fit: contain; }
+
+        .enlaces-footer { display: flex; gap: 20px; }
+        .enlaces-footer a { font-weight: 700; font-size: 11px; letter-spacing: 1px; }
+        .enlaces-footer a:hover { text-decoration: underline; }
+        .copy-footer { font-weight: 700; font-size: 11px; letter-spacing: 1px; }
+
+        @media (max-width: 768px) {
+            header, .footer-caja { flex-direction: column; gap: 20px; text-align: center; }
+            .grid-noticias { grid-template-columns: 1fr; }
+            .fila-noticia { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .enlaces-footer { flex-wrap: wrap; justify-content: center; }
+            .articulo-completo h1 { font-size: 32px; }
+            .logo-gigante { max-height: 120px; }
+            .autor-barra { flex-wrap: wrap; }
+            .btn-video { width: 100%; box-sizing: border-box; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container" onclick="mostrarInicio()">
+            <img src="LOGO PULSO DEPORTIVO.png" alt="Pulso Deportivo" class="imagen-logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a onclick="mostrarInicio()" class="activo">Deportes</a></li>
+            </ul>
+        </nav>
+        <button class="btn-suscribete" onclick="alert('Próximamente')">Suscríbete</button>
+    </header>
+
+    <main id="vista-inicio">
+        <div class="banner-logo-central">
+            <img src="LOGO PULSO DEPORTIVO.png" alt="Pulso Deportivo" class="logo-gigante">
+        </div>
+
+        <div class="grid-noticias">
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-1', event)" class="tarjeta-noticia">
+                <img src="001Noticia1.jpg" alt="Selección de Ecuador" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">10 Jun 2026</span></div>
+                <h2 class="titulo-noticia">¡Vamos Ecuador! La Tri alcanzó su quinta clasificación a la Copa Mundial, de forma anticipada</h2>
+                <p class="descripcion-noticia">Finalmente llegó el día de celebrar. El martes 10 de junio del 2025, Ecuador aseguró su clasificación al Mundial 2026...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-2', event)" class="tarjeta-noticia">
+                <img src="001Noticia2.jpg" alt="Fútbol Femenino" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 Jun 2026</span></div>
+                <h2 class="titulo-noticia">‘El fútbol femenino vive un momento de quiebre’, advierte Fernanda Vásconez, exdirigente del Club Ñañas</h2>
+                <p class="descripcion-noticia">Fernanda Vásconez, fundadora del Club Ñañas, afirmó que el fútbol femenino ecuatoriano atraviesa un momento clave...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-3', event)" class="tarjeta-noticia">
+                <img src="001Noticia3.jpg" alt="Wesley Brasil" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">7 Jun 2026</span></div>
+                <h2 class="titulo-noticia">Brasil pierde a Wesley por lesión para el Mundial 2026 y Carlo Ancelotti llama a Éderson como reemplazo</h2>
+                <p class="descripcion-noticia">Brasil sufrió una baja importante a pocos días del inicio del Mundial 2026. El lateral derecho Wesley quedó fuera...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-4', event)" class="tarjeta-noticia">
+                <img src="001Noticia4.jpg" alt="Ranking FIFA" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 Jun 2026</span></div>
+                <h2 class="titulo-noticia">Ecuador cae al puesto 24 del ranking FIFA a días de su debut en el Mundial 2026</h2>
+                <p class="descripcion-noticia">La FIFA actualizó el ranking mundial de selecciones tras la disputa de los primeros partidos amistosos previos al Mundial 2026...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-5', event)" class="tarjeta-noticia">
+                <img src="001Noticia5.jpg" alt="Ecuador Mundial" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">5 Jun 2026</span></div>
+                <h2 class="titulo-noticia">Ecuador llega con ilusión y solidez a su debut mundialista</h2>
+                <p class="descripcion-noticia">La selección ecuatoriana de fútbol se prepara para afrontar una nueva participación en la Copa Mundial de la FIFA 2026...</p>
+                <div class="autor-tarjeta">Por: Carlos Suárez</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-6', event)" class="tarjeta-noticia">
+                <img src="001Noticia10.jpg" alt="Fórmula 1" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">4 Jun 2026</span></div>
+                <h2 class="titulo-noticia">Fórmula 1 entra en su etapa más competitiva de la temporada</h2>
+                <p class="descripcion-noticia">Los circuitos mundiales se preparan para recibir las carreras más exigentes del año. Analistas de velocidad destacan que las escuderías...</p>
+                <div class="autor-tarjeta">Por: Doménica Vite</div>
+            </a>
+          
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-8', event)" class="tarjeta-noticia">
+                <img src="001Noticia8.jpg" alt="Real Madrid Competitivo" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">2 Jun 2026</span></div>
+                <h2 class="titulo-noticia">Real Madrid y su lucha por mantenerse competitivo en Europa</h2>
+                <p class="descripcion-noticia">El Real Madrid continúa siendo uno de los clubes más importantes y reconocidos del fútbol europeo...</p>
+                <div class="autor-tarjeta">Por: Dayna Jiménez</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-9', event)" class="tarjeta-noticia">
+                <img src="001Noticia9.jpg" alt="Torneo Facso" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 Jun 2026</span></div>
+                <h2 class="titulo-noticia">Los chicos de la Facultad de Comunicación Social (FACSO) se preparan para torneo de Inter facultades</h2>
+                <p class="descripcion-noticia">El próximo lunes 8 de junio dará inicio el esperado torneo de fútbol interfacultades de la Universidad de Guayaquil...</p>
+                <div class="autor-tarjeta">Por: José Mayorga</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-10', event)" class="tarjeta-noticia">
+                <img src="001F1kimi.jpg" alt="Kimi Antonelli Mónaco" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">7 Jun 2026</span></div>
+                <h2 class="titulo-noticia">Kimi Antonelli se lleva la victoria en Mónaco</h2>
+                <p class="descripcion-noticia">El Gran Premio de Mónaco 2026 volvió a ofrecer una carrera llena de emoción, estrategia y momentos de tensión...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-11', event)" class="tarjeta-noticia">
+                <img src="001Noticia11.jpg" alt="Hernán Galíndez" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 Jun 2026</span></div>
+                <h2 class="titulo-noticia">Hernán Galíndez, arquero de Ecuador, y su optimismo para el Mundial 2026: ‘Estamos para competir’</h2>
+                <p class="descripcion-noticia">Hernán Galíndez es el portero de la selección ecuatoriana de fútbol y en este 2026 disputará su segundo Mundial...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-12', event)" class="tarjeta-noticia">
+                <img src="001Noticia12.jpg" alt="Emelec Nasuti" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 Jun 2026</span></div>
+                <h2 class="titulo-noticia">Continuidad de Cristian Nasuti en Emelec genera opiniones divididas</h2>
+                <p class="descripcion-noticia">El Club Sport Emelec tomó la decisión de ratificar a Cristian Nasuti como director técnico principal junto con Javier Klimowicz...</p>
+            </a>
+        </div>
+
+        <div class="seccion-lista">
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-1', event)" class="fila-noticia">
+                <span class="numero-lista">01</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">¡Vamos Ecuador! La Tri alcanzó su quinta clasificación a la Copa Mundial, de forma anticipada</span><span class="fecha-lista">10 jun</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-2', event)" class="fila-noticia">
+                <span class="numero-lista">02</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">‘El fútbol femenino vive un momento de quiebre’, advierte Fernanda Vásconez, exdirigente del Club Ñañas</span><span class="fecha-lista">8 jun</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-3', event)" class="fila-noticia">
+                <span class="numero-lista">03</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Brasil pierde a Wesley por lesión para el Mundial 2026 y Carlo Ancelotti llama a Éderson como reemplazo</span><span class="fecha-lista">7 jun</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-4', event)" class="fila-noticia">
+                <span class="numero-lista">04</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Ecuador cae al puesto 24 del ranking FIFA a días de su debut en el Mundial 2026</span><span class="fecha-lista">6 jun</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-5', event)" class="fila-noticia">
+                <span class="numero-lista">05</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Ecuador llega con ilusión y solidez a su debut mundialista</span><span class="fecha-lista">5 jun</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-6', event)" class="fila-noticia">
+                <span class="numero-lista">06</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Fórmula 1 entra en su etapa más competitiva de la temporada</span><span class="fecha-lista">4 jun</span>
+            </a>
+           
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-8', event)" class="fila-noticia">
+                <span class="numero-lista">08</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Real Madrid y su lucha por mantenerse competitivo en Europa</span><span class="fecha-lista">2 jun</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-9', event)" class="fila-noticia">
+                <span class="numero-lista">09</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Los chicos de la Facultad de Comunicación Social (FACSO) se preparan para torneo de Inter facultades</span><span class="fecha-lista">6 jun</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-10', event)" class="fila-noticia">
+                <span class="numero-lista">10</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Kimi Antonelli se lleva la victoria en Mónaco</span><span class="fecha-lista">7 jun</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-11', event)" class="fila-noticia">
+                <span class="numero-lista">11</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Hernán Galíndez, arquero de Ecuador, y su optimismo para el Mundial 2026: ‘Estamos para competir’</span><span class="fecha-lista">6 jun</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-12', event)" class="fila-noticia">
+                <span class="numero-lista">12</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Continuidad de Cristian Nasuti en Emelec genera opiniones divididas</span><span class="fecha-lista">6 jun</span>
+            </a>
+        </div>
+    </main>
+
+    <main id="noticia-1" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">10 Jun 2026</span></div>
+        <h1>¡Vamos Ecuador! La Tri alcanzó su quinta clasificación a la Copa Mundial, de forma anticipada</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>10 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia1.jpg" alt="Selección de Ecuador" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Finalmente llegó el día de celebrar. El martes 10 de junio del 2025, Ecuador aseguró su clasificación al Mundial 2026 tras empatar con Perú en Lima.</p>
+            <p>El medio destacó que la selección cuenta con una generación joven, una defense sólida y jugadores con experiencia internacional, factores que fortalecen las aspiraciones del equipo en la competición mundialista.</p>
+        </div>
+    </main>
+
+    <main id="noticia-2" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 Jun 2026</span></div>
+        <h1>‘El fútbol femenino vive un momento de quiebre’, advierte Fernanda Vásconez, exdirigente del Club Ñañas</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia2.jpg" alt="Fútbol Femenino" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Fernanda Vásconez, fundadora del Club Ñañas, afirmó que el fútbol femenino ecuatoriano atraviesa un momento clave para su desarrollo. Señaló que, aunque las jugadoras han demostrado un gran nivel y potencial, la falta de estabilidad económica en los clubes pone en riesgo el crecimiento alcanzado en los últimos años.</p>
+            <p>Vásconez explicó que muchos clubes enfrentan dificultades para sostenerse financieramente y consideró necesario realizar cambios estructurales, como la creación de un departamento exclusivo para el fútbol femenino que impulse la gestión comercial, los patrocinios y la formación de una base sólida de aficionados.</p>
+            <p>Además, criticó que al fútbol femenino se le exijan los mismos requisitos que al masculino, pese a que este parseFloat tuvo décadas para consolidarse. Finalmente, reveló que dejó la dirigencia de Ñañas al cumplir el límite legal de periodos permitidos y confirmó que el club decidió no participar en la Superliga Femenina esta temporada debido a desacuerdos con el modelo actual de la competición.</p>
+        </div>
+    </main>
+
+    <main id="noticia-3" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">7 Jun 2026</span></div>
+        <h1>Brasil pierde a Wesley por lesión para el Mundial 2026 y Carlo Ancelotti llama a Éderson como reemplazo</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>7 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia3.jpg" alt="Wesley Brasil" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Brasil sufrió una baja importante a pocos días del inicio del Mundial 2026. El lateral derecho Wesley quedó fuera de la convocatoria tras sufrir una lesión muscular en el aductor del muslo izquierdo durante el amistoso ante Egipto. El jugador abandonó el campo lesionado y posteriormente los exámenes médicos confirmaron que no podrá participar en el torneo.</p>
+            <p>Ante esta situación, el seleccionador Carlo Ancelotti decidió convocar al mediocampista Ederson para reemplazarlo en la lista mundialista. La Confederación Brasileña de Fútbol lamentó la lesión de Wesley, quien era una pieza importante del equipo.</p>
+            <p>La ausencia de Wesley obliga a Brasil a reorganizar su defensa de cara al Mundial, donde debutará en la fase de grupos frente a Marruecos.</p>
+        </div>
+    </main>
+
+    <main id="noticia-4" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 Jun 2026</span></div>
+        <h1>Ecuador cae al puesto 24 del ranking FIFA a días de su debut en el Mundial 2026</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>6 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia4.jpg" alt="Ranking FIFA" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>La FIFA actualizó el ranking mundial de selecciones tras la disputa de los primeros partidos amistosos previos al Mundial 2026, que se celebrará en Estados Unidos, Canadá y México.</p>
+            <p>La selección ecuatoriana descendió al puesto 24 del ranking FIFA pocos días antes del inicio de la Copa Mundial 2026. A pesar de este retroceso en la clasificación internacional, el equipo mantiene altas expectativas gracias a su rendimiento durante las eliminatorias y al nivel mostrado por varios de sus jugadores en el fútbol europeo.</p>
+        </div>
+    </main>
+
+    <main id="noticia-5" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">5 Jun 2026</span></div>
+        <h1>Ecuador llega con ilusión y solidez a su debut mundialista</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Carlos Suárez</span></span>
+            <span class="autor-separador">•</span>
+            <span>5 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia5.jpg" alt="Ecuador Mundial" class="imagen-principal">
+        
+        <a href="https://drive.google.com/file/d/1O_RhJQRY7AHW76Bnznih-7lTBXLP8qcf/view?usp=drive_link" target="_blank" class="btn-video">🎥 Ver Noticia / Video</a>
+
+        <div class="cuerpo-texto">
+            <p>La selección ecuatoriana de fútbol se prepara para afrontar una nueva participación en la Copa Mundial de la FIFA 2026, torneo que se disputará en Estados Unidos, México y Canadá. La Tricolor llega a esta cita tras una destacada campaña en las Eliminatorias Sudamericanas, donde logró asegurar su clasificación de manera anticipada.</p>
+            <p>Bajo la dirección técnica de Sebastián Beccacece, Ecuador ha consolidado un equipo caracterizado por su orden táctico, una defensa sólida y la presencia de futbolistas que militan en importantes ligas internacionales. Jugadores como Moisés Caicedo, Piero Hincapié, Willian Pacho y Enner Valencia se perfilan como piezas fundamentales para las aspiraciones del combinado nacional.</p>
+            <p>Uno de los aspectos más destacados del proceso clasificatorio fue la capacidad defensiva del equipo, que recibió pocos goles durante las eliminatorias y se mantuvo entre las selecciones más regulares de Sudamérica. Además, la combinación de experiencia y juventud ha generado optimismo entre la afición ecuatoriana.</p>
+            <p>El debut de Ecuador en el Mundial genera grandes expectativas. La meta inicial será superar la fase de grupos y buscar igualar o mejorar la histórica actuación de Alemania 2006, cuando la Tricolor alcanzó los octavos de final. La afición ecuatoriana espera que esta generación de futbolistas pueda escribir una nueva página en la historia del fútbol nacional y consolidar a Ecuador como una de las selecciones emergentes del continente.</p>
+        </div>
+    </main>
+
+    <main id="noticia-6" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">4 Jun 2026</span></div>
+        <h1>Fórmula 1 entra en su etapa más competitiva de la temporada</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Doménica Vite</span></span>
+            <span class="autor-separador">•</span>
+            <span>4 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia10.jpg" alt="Fórmula 1 Carrera" class="imagen-principal">
+        
+        <a href="https://drive.google.com/file/d/1WcwOVmtNtPaB6tYWO_pO5VJLyr0gBI09/view?usp=drive_link" target="_blank" class="btn-video">🎥 Ver Noticia / Video</a>
+
+        <div class="cuerpo-texto">
+            <p>Los circuitos de la máxima categoría del automovilismo entran en su fase más crítica del año. Con la evolución de los monoplazas y los constantes cambios de estrategias en los pits, las principales escuderías buscan ajustar cada milímetro de sus configuraciones mecánicas y aerodinámicas para asegurar los campeonatos globales.</p>
+            <p>Expertos de velocidad afirman que las destrezas de manejo bajo presión y las cambiantes condiciones climáticas serán determinantes en los próximos fines de semana de carrera, donde cualquier error en la pista podría costar el podio definitivo.</p>
+        </div>
+    </main>
+
+    
+
+    <main id="noticia-8" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">2 Jun 2026</span></div>
+        <h1>Real Madrid y su lucha por mantenerse competitivo en Europa</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Dayna Jiménez</span></span>
+            <span class="autor-separador">•</span>
+            <span>2 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia8.jpg" alt="Real Madrid Competitivo" class="imagen-principal">
+        
+        <a href="https://drive.google.com/file/d/1OE7sBl-tF8qO4gsCErD1qN9RANsyDUGd/view?usp=drive_link" target="_blank" class="btn-video">🎥 Ver Noticia / Video</a>
+
+        <div class="cuerpo-texto">
+            <p>El Real Madrid continúa siendo uno de los clubes más importantes y reconocidos del fútbol europeo, manteniendo una presencia constante en las competiciones internacionales más exigentes. A lo largo de los años, el equipo español ha logrado construir una historia marcada por títulos, jugadores emblemáticos y una fuerte identidad competitiva que lo convierte en uno de los principales candidatos en cada torneo que disputa.</p>
+            <p>En la actualidad, el club enfrenta el reto de mantenerse al más alto nivel frente a equipos que cada temporada fortalecen sus plantillas y elevan la intensidad de la competencia. A pesar de ello, el Real Madrid ha demostrado capacidad para adaptarse a los cambios, combinando la experiencia de futbolistas consolidados con la participación de jóvenes talentos que han comenzado a destacar dentro y fuera de España.</p>
+            <p>Uno de los aspectos más importantes del equipo ha sido la preparación táctica y física. El cuerpo técnico ha buscado mantener un equilibrio entre la defensa and el ataque, apostando por un estilo de juego dinámico que permita responder a rivales de gran nivel competitivo. Además, la rotación de jugadores ha sido clave para afrontar calendarios exigentes, especialmente cuando deben disputar varios partidos en poco tiempo entre competencias nacionales e internacionales.</p>
+        </div>
+    </main>
+
+    <main id="noticia-9" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 Jun 2026</span></div>
+        <h1>Los chicos de la Facultad de Comunicación Social (FACSO) se preparan para torneo de Inter facultades</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">José Mayorga</span></span>
+            <span class="autor-separador">•</span>
+            <span>6 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia9.jpg" alt="Torneo Facso" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>El próximo lunes 8 de junio dará inicio el esperado torneo de fútbol interfacultades de la Universidad de Guayaquil. Los equipos femenil y varonil de la Facultad de Comunicación Social (FACSO) se alistan para representar a su facultad en esta competencia que reunirá a estudiantes de distintas carreras.</p>
+            <p>En la jornada inaugural, los chicos de FACSO, quienes han decidido jugar bajo la representación del equipo Alemania, se enfrentarán contra la facultad que eligió como selección a Inglaterra. El encuentro promete ser vibrante y marcará el inicio de un campeonato lleno de emoción, talento y espíritu universitario.</p>
+            <p>Cabe destacar que el conjunto de FACSO está dirigido por el Licenciado Víctor Vera, quien ha trabajado en la preparación y motivación de los estudiantes para afrontar este reto deportivo.</p>
+            <p>Este torneo de fútbol no solo busca fomentar la práctica deportiva, sino también fortalecer la integración y el compañerismo entre las facultades de la institución.</p>
+        </div>
+    </main>
+
+    <main id="noticia-10" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">7 Jun 2026</span></div>
+        <h1>Kimi Antonelli se lleva la victoria en Mónaco</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Domenica Vite</span></span>
+            <span class="autor-separador">•</span>
+            <span>7 de Junio de 2026</span>
+        </div>
+        <img src="001F1kimi.jpg" alt="Kimi Antonelli Mónaco" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>El Gran Premio de Mónaco 2026 volvió a ofrecer una carrera llena de emoción, estrategia y momentos de tensión en las estrechas calles de Montecarlo. En esta ocasión, el gran vencedor fue Kimi Antonelli, piloto de Mercedes, quien logró una destacada actuación para quedarse con el primer lugar y sumar una nueva victoria en la temporada.</p>
+            <p>Desde el inicio de la competencia, Antonelli mostró un gran rendimiento y consiguió mantener el liderato a pesar de la presión de sus rivales. Gracias a una conducción sólida y una estrategia efectiva por parte de su equipo, el piloto italiano logró controlar la carrera y cruzar la línea de meta en la primera posición.</p>
+            <p>El segundo lugar fue para Lewis Hamilton, de Ferrari, quien tuvo una actuación consistente y se mantuvo entre los primeros puestos durante toda la prueba. Por su parte, Isack Hadjar, de Red Bull, completó el podio tras una destacada carrera que le permitió sumar puntos importantes para su equipo.</p>
+            <p>La competencia estuvo marcada por varios incidentes en pista y algunos abandonos que modificaron el desarrollo de la carrera. Estos acontecimientos obligaron a los equipos a replantear sus estrategias y mantuvieron la expectativa entre los aficionados hasta las últimas vueltas.</p>
+            <p>Con este triunfo, Antonelli consigue una de las victorias más importantes de su carrera y fortalece su posición como líder del campeonato mundial de Fórmula 1. Además, continúa consolidándose como una de las grandes promesas de la categoría y uno de los pilotos más destacados de la temporada 2026.</p>
+            <p>El Gran Premio de Mónaco volvió a demostrar por qué es una de las carreras más prestigiosas del calendario, ofreciendo un espectáculo lleno de velocidad, precisión competitive que mantuvo la atención de los seguidores del automovilismo de principio a fin.</p>
+        </div>
+    </main>
+
+    <main id="noticia-11" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 Jun 2026</span></div>
+        <h1>Hernán Galíndez, arquero de Ecuador, y su optimismo para el Mundial 2026: ‘Estamos para competir, no hay rival invencible’</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">El Universo</span></span>
+            <span class="autor-separador">•</span>
+            <span>6 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia11.jpg" alt="Hernán Galíndez" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Hernán Galíndez es el portero de la selección ecuatoriana de fútbol y en este 2026 disputará su segundo Mundial con el combinado nacional. Galíndez, de 39 años, nacido en Rosario, Argentina, pero ecuatoriano por naturalización, insiste en su orgullo de ser tricolor y tras haber tenido su experiencia en el certamen de Qatar 2022, cree que para el actual llega con más “madurez”.</p>
+            <p>“Todos llegamos a ese Mundial de Qatar con esa inexperiencia de no saber bien dónde nos encontrábamos. Hoy sabemos lo que es jugar un Mundial. Y yo soy una persona mucho más madura, con mucho más trabajo psicológico. Creo ser un mejor arquero también. Ahora hay que demostrarlo”, dijo.</p>
+            <p>El portero del combinado nacional analizó también a los rivales que tendrá la selección tricolor. “En un mundial no hay rival que vos digas ‘a este le vamos a ganar seguro’. Eso no existe. Sabemos que Costa de Marfil es un equipo muy físico, que la mayoría juega en la liga francesa y en la Premier League. Un rival durísimo. Curazao tiene la particularidad de que va a ser su primer mundial y que se van a jugar el sueño de un país. Otro partido durísimo. Y Alemania es Alemania. Tenemos que tratar de ir partido a partido, de entender que los tres partidos te dan tres puntos, de no hacer cuentas. Creo que podemos ser muy competitivos contra cualquier rival. Lo hemos demostrado”, añadió en entrevista con el portal de la FIFA.</p>
+            <p>Y continuó: “Yo creo que estamos para competir. Para seguir por el camino que venimos, para seguir demostrando la evolución que tenemos, como equipo, como grupo, para no sentirnos ni más ni menos que nadie, para entender que todos los partidos tienen riesgo y que todos los partidos se pueden ganar, que no hay ningún rival invencible ni tampoco un rival al cual le vamos a ganar fácil. Confiamos mucho en nosotros”.</p>
+        </div>
+    </main>
+
+    <main id="noticia-12" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Regresar al Main</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 Jun 2026</span></div>
+        <h1>Continuidad de Cristian Nasuti en Emelec genera opiniones divididas</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Jose Mayorga Cardenas</span></span>
+            <span class="autor-separador">•</span>
+            <span>6 de Junio de 2026</span>
+        </div>
+        <img src="001Noticia12.jpg" alt="Emelec Nasuti" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>El Club Sport Emelec tomó la decisión de ratificar a Cristian Nasuti como director técnico principal junto con Javier Klimowicz, como asistente, y Rodrigo Figueroa, en el rol de preparador físico. El acuerdo es en principio hasta el final de la temporada. Sin embargo, Luis Miguel Escalada, director deportivo del club, le dijo a EL UNIVERSO que si se cumplen los objetivos, habría la posibilidad de extender el vínculo.</p>
+            <p>Para Doménica González, periodista de Fanboleros, el hecho de que el argentino haya sido parte de procesos anteriores será vital para su labor en el club ahora como estratega principal. “La continuidad de Nasuti le viene bien a Emelec. Es parte del club, ha sido parte de varios procesos, ahora último con Vicente Sánchez. Conoce muy bien a los jugadores y tiene esa capacidad de poder conectar con los jugadores porque ha estado en ambas facetas: la de jugador y DT”, sostuvo González.</p>
+            <p>“Le va a servir en la segunda etapa, donde debe sacar puntos para seguir escalando posiciones y alcanzar para el próximo año un torneo internacional, que hace muchos años Emelec no logra concretarlo. Nasuti le va a venir bien”, complementó.</p>
+            <p>Por su parte, Mauricio Bermúdez, de la emisora KCH, fue contundente al firmar que “es decepcionante” la decisión tomada por el club. “Es decepcionante porque se hablaba de una directiva que buscaba recuperar el estilo ofensivo histórico del equipo, y Nasuti y Vicente Sánchez son todo lo contrario. Si bien Emelec ha mejorado en los últimos partidos, son mejorías en la elección de perfiles, un equipo más compacto, que era lo mínimo para cualquier cuerpo técnico”, analizó Bermúdez.</p>
+            <p>“Pasar de nombres como Arias, Robatto, Rabanal a Nasuti, de verdad que es un bajón cualitativo gigantesco. No solo en recorrido sino en la pizarra, que es lo importante. Debió verse Emelec en el espejo de Barcelona SC cuando se equivocó con Segundo Castillo y ver que el fútbol moderno va más allá de tener buenos jugadores o empatía con el grupo”, analizó.</p>
+            <p>Por otro lado, el comunicador no ve posible que Emelec pueda meterse a la Copa Libertadores. “Las exigencias hoy son otras. Creía que por plantel, por lo bien que se reforzó a inicios de año y sé que se va a reforzar más, pensé que estaba para pelear un cupo a la Copa Libertadores, pero con esto ahora tengo mis dudas”, sentenció.</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-caja">
+            <div class="logo-footer">
+                <img src="LOGO PULSO DEPORTIVO.png" alt="Pulso Deportivo" class="imagen-logo-footer">
+            </div>
+            <div class="enlaces-footer">
+                <a href="#">AVISO LEGAL</a>
+                <a href="#">CONTACTO</a>
+                <a href="#">PUBLICIDAD</a>
+                <a href="#">PRIVACIDAD</a>
+            </div>
+            <div class="copy-footer">
+                &copy; 2026 PULSO DEPORTIVO — PERIODISMO DE CALLE
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function mostrarNoticia(idNoticia, event) {
+            if(event) {
+                event.preventDefault();
+            }
+            
+            document.getElementById('vista-inicio').classList.add('oculto');
+            
+            let todasLasNoticias = document.querySelectorAll('.articulo-completo');
+            todasLasNoticias.forEach(function(noticia) {
+                noticia.classList.add('oculto');
+            });
+
+            document.getElementById(idNoticia).classList.remove('oculto');
+
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function mostrarInicio() {
+            let todasLasNoticias = document.querySelectorAll('.articulo-completo');
+            todasLasNoticias.forEach(function(noticia) {
+                noticia.classList.add('oculto');
+            });
+
+            document.getElementById('vista-inicio').classList.remove('oculto');
+
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    </script>
+</body>
+</html>

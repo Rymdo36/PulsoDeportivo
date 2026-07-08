@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulso Deportivo</title>
+    
+    <link rel="icon" href="LOGO PULSO DEPORTIVO.png" type="image/png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --color-verde: #27ae60;
+            --color-azul: #0d6efd;
+            --color-fondo: #fcfbfa;
+            --color-texto: #111;
+            --fuente-titulos: 'Playfair Display', serif;
+            --fuente-texto: 'Montserrat', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--fuente-texto); background-color: var(--color-fondo); color: var(--color-texto); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+
+        /* ===== CLASE PARA OCULTAR VISTAS ===== */
+        .oculto { display: none !important; }
+
+        /* ===== HEADER Y NAVEGACIÓN ===== */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; border-bottom: 5px solid #000; background-color: #fff; position: sticky; top: 0; z-index: 1000; flex-wrap: wrap; }
+        
+        .logo-container { cursor: pointer; display: flex; align-items: center; }
+        .imagen-logo { max-height: 95px; width: auto; object-fit: contain; } 
+
+        nav ul { display: flex; list-style: none; gap: 24px; flex-wrap: wrap; justify-content: center; }
+        nav a { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; cursor: pointer; }
+        nav a.activo { color: var(--color-verde); }
+        
+        .btn-suscribete { background-color: var(--color-azul); color: #fff; border: 3px solid #000; padding: 10px 20px; font-weight: 700; font-size: 12px; text-transform: uppercase; cursor: pointer; box-shadow: 3px 3px 0px #000; transition: transform 0.1s; }
+        .btn-suscribete:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+
+        /* ===== SECCIÓN PRINCIPAL ===== */
+        main { max-width: 1200px; margin: 40px auto; padding: 0 5%; min-height: 60vh; }
+        
+        .banner-logo-central { display: flex; justify-content: center; align-items: center; margin-bottom: 50px; padding-bottom: 10px; }
+        .logo-gigante { max-height: 200px; width: auto; object-fit: contain; }
+
+        /* ===== GRID DE NOTICIAS (Tarjetas) ===== */
+        .grid-noticias { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-bottom: 60px; }
+        .tarjeta-noticia { display: flex; flex-direction: column; cursor: pointer; transition: opacity 0.3s; height: 100%; }
+        .tarjeta-noticia:hover { opacity: 0.8; }
+        .imagen-noticia { width: 100%; height: 350px; object-fit: cover; border: 1px solid #ddd; margin-bottom: 15px; }
+        .meta-info { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+        .etiqueta { background-color: var(--color-verde); color: #fff; padding: 5px 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .fecha { font-size: 12px; color: #666; }
+        .titulo-noticia { font-family: var(--fuente-titulos); font-size: 28px; font-weight: 900; line-height: 1.2; margin-bottom: 10px; }
+        .descripcion-noticia { font-size: 14px; color: #444; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1; }
+        
+        .autor-tarjeta { font-size: 11px; font-weight: 700; color: var(--color-azul); text-transform: uppercase; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
+
+        /* ===== LISTA DE NOTICIAS ENUMERADA ===== */
+        .seccion-lista { border-top: 3px solid #000; border-bottom: 3px solid #000; padding: 10px 0; margin-bottom: 40px; }
+        .fila-noticia { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px dotted #ccc; transition: background-color 0.2s; cursor: pointer; }
+        .fila-noticia:hover { background-color: #f5f5f5; }
+        .fila-noticia:last-child { border-bottom: none; }
+        .numero-lista { font-size: 12px; color: #888; width: 40px; font-weight: 600; }
+        .etiqueta-lista { background-color: var(--color-verde); color: #fff; padding: 4px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-right: 20px; width: 100px; text-align: center; letter-spacing: 0.5px; }
+        .titulo-lista { font-weight: 700; font-size: 14px; flex-grow: 1; padding-right: 20px; }
+        .fecha-lista { font-size: 11px; color: #888; white-space: nowrap; }
+
+        /* ===== DISEÑO DE LA NOTICIA COMPLETA ===== */
+        .articulo-completo { max-width: 800px; margin: 0 auto; padding-top: 20px; }
+        
+        .btn-volver { background: #fff; color: #111; padding: 12px 24px; border: 3px solid #000; font-family: var(--fuente-texto); font-weight: 700; font-size: 13px; text-transform: uppercase; cursor: pointer; margin-bottom: 40px; display: inline-flex; align-items: center; gap: 10px; box-shadow: 4px 4px 0px #000; transition: all 0.2s; }
+        .btn-volver:hover { background: var(--color-verde); color: #fff; transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; }
+        .btn-volver:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+
+        .articulo-completo h1 { font-family: var(--fuente-titulos); font-size: 42px; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
+        
+        .autor-barra { display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #666; border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 10px 0; margin-bottom: 30px; }
+        .autor-nombre { color: #111; }
+        .autor-separador { color: #ccc; font-weight: normal; }
+
+        .articulo-completo .imagen-principal { width: 100%; height: auto; max-height: 480px; object-fit: cover; margin-bottom: 30px; border: 1px solid #ddd; }
+        
+        /* ESTILO NUEVO: Botón para el Video de Drive */
+        .btn-video { display: inline-block; background-color: var(--color-azul); color: #fff; padding: 15px 30px; font-family: var(--fuente-texto); font-weight: 700; font-size: 14px; text-transform: uppercase; text-align: center; border: 3px solid #000; box-shadow: 4px 4px 0px #000; margin-bottom: 30px; transition: all 0.2s; text-decoration: none; }
+        .btn-video:hover { background-color: #111; color: #fff; transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; }
+        .btn-video:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+
+        .articulo-completo .cuerpo-texto { font-size: 18px; line-height: 1.8; color: #333; text-align: justify; }
+        .articulo-completo .cuerpo-texto p { margin-bottom: 25px; }
+
+
+        /* ===== MEJORAS SEGÚN OBSERVACIONES DOCENTES ===== */
+        #video-especial, #noticias-principales, #listado-noticias, #redes-sociales, #contacto { scroll-margin-top: 160px; }
+
+        .bloque-video-especial { display: flex; justify-content: center; margin-bottom: 60px; padding-bottom: 40px; border-bottom: 3px solid #000; }
+        .tarjeta-video-destacada { max-width: 620px; width: 100%; text-align: left; border: 3px solid #000; padding: 18px; background-color: #fff; box-shadow: 6px 6px 0px #000; }
+        .tarjeta-video-destacada:hover { opacity: 1; transform: translate(-2px, -2px); box-shadow: 8px 8px 0px #000; }
+        .imagen-video-destacada { object-fit: contain; background-color: #fff; padding: 25px; }
+
+        /* ===== APARTADO DE REDES OFICIALES ===== */
+        .seccion-redes { margin: 45px 0; padding: 35px; border: 3px solid #000; background-color: #fff; box-shadow: 6px 6px 0px #000; }
+        .seccion-redes h2 { font-family: var(--fuente-titulos); font-size: 34px; font-weight: 900; line-height: 1.1; margin-bottom: 12px; }
+        .texto-redes { font-size: 15px; color: #444; margin-bottom: 25px; max-width: 850px; }
+        .grid-redes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .tarjeta-red { display: flex; flex-direction: column; justify-content: space-between; min-height: 135px; padding: 18px; border: 3px solid #000; background-color: #fcfbfa; box-shadow: 4px 4px 0px #000; transition: all 0.2s; }
+        .tarjeta-red:hover { background-color: var(--color-verde); color: #fff; transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; }
+        .tarjeta-red .icono-red { font-size: 28px; margin-bottom: 12px; }
+        .tarjeta-red strong { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .tarjeta-red span { font-size: 12px; font-weight: 600; color: #555; }
+        .tarjeta-red:hover span { color: #fff; }
+        .tarjeta-drive { background-color: #eef6ff; }
+
+        .ticker-container { border: 3px solid #000; margin: 30px 0 10px; display: flex; align-items: center; background: #fff; overflow: hidden; }
+        .ticker-titulo { background: var(--color-verde); color: #fff; font-size: 12px; font-weight: 900; text-transform: uppercase; padding: 14px 18px; border-right: 3px solid #000; white-space: nowrap; }
+        .ticker-wrap { overflow: hidden; width: 100%; }
+        .ticker-track { display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 28s linear infinite; font-weight: 700; font-size: 13px; }
+        .ticker-track span { margin-right: 45px; }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* ===== FOOTER ===== */
+        footer { background-color: #e5e5e5; padding: 30px 5%; margin-top: 40px; }
+        .footer-caja { border: 3px solid #000; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: #e5e5e5; }
+        
+        .logo-footer { display: flex; align-items: center; justify-content: center; }
+        .imagen-logo-footer { max-height: 50px; width: auto; object-fit: contain; }
+
+        .enlaces-footer { display: flex; gap: 20px; }
+        .enlaces-footer a { font-weight: 700; font-size: 11px; letter-spacing: 1px; }
+        .enlaces-footer a:hover { text-decoration: underline; }
+        .copy-footer { font-weight: 700; font-size: 11px; letter-spacing: 1px; }
+
+        @media (max-width: 768px) {
+            header, .footer-caja { flex-direction: column; gap: 20px; text-align: center; }
+            nav ul { gap: 14px; }
+            nav a { font-size: 11px; }
+            .grid-noticias { grid-template-columns: 1fr; }
+            .fila-noticia { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .enlaces-footer { flex-wrap: wrap; justify-content: center; }
+            .articulo-completo h1 { font-size: 32px; }
+            .logo-gigante { max-height: 120px; }
+            .autor-barra { flex-wrap: wrap; }
+            .btn-video { width: 100%; box-sizing: border-box; }
+            .ticker-container { flex-direction: column; align-items: stretch; }
+            .ticker-titulo { border-right: none; border-bottom: 3px solid #000; text-align: center; }
+            .grid-redes { grid-template-columns: 1fr; }
+            .seccion-redes { padding: 24px; box-shadow: 4px 4px 0px #000; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Correcciones aplicadas: fechas completas, eliminación de referencias temporales relativas, menú de navegación, ajuste visual para FACSO y apartado de redes oficiales. -->
+
+    <header>
+        <div class="logo-container" onclick="mostrarInicio()">
+            <img src="LOGO PULSO DEPORTIVO.png" alt="Pulso Deportivo" class="imagen-logo">
+        </div>
+        <!-- Corrección docente: se agrega menú de navegación para evitar depender solo del scroll. -->
+        <nav aria-label="Menú principal">
+            <ul>
+                <li><a onclick="mostrarInicio(true); marcarMenuActivo(this)" class="activo">Inicio</a></li>
+                <li><a onclick="irASeccion('video-especial', this)">Video</a></li>
+                <li><a onclick="irASeccion('noticias-principales', this)">Noticias</a></li>
+                <li><a onclick="irASeccion('listado-noticias', this)">Lista rápida</a></li>
+                <li><a onclick="irASeccion('redes-sociales', this)">Redes</a></li>
+                <li><a onclick="irASeccion('contacto', this)">Contacto</a></li>
+            </ul>
+        </nav>
+        <button class="btn-suscribete" onclick="alert('Próximamente')">Suscríbete</button>
+    </header>
+
+    <main id="vista-inicio">
+        <div class="banner-logo-central">
+            <img src="LOGO PULSO DEPORTIVO.png" alt="Pulso Deportivo" class="logo-gigante">
+        </div>
+
+        <section id="video-especial" class="bloque-video-especial">
+            <!-- Corrección: el video de entrada ahora aparece como una tarjeta de noticia centrada. -->
+            <a href="https://drive.google.com/file/d/1l8nMdepTSftPK7mq5vfSaabuTl0K94DW/view?usp=drive_link" target="_blank" rel="noopener noreferrer" class="tarjeta-noticia tarjeta-video-destacada">
+                <img src="LOGO PULSO DEPORTIVO.png" alt="Video especial La cuenta regresiva" class="imagen-noticia imagen-video-destacada">
+                <div class="meta-info"><span class="etiqueta">Video</span><span class="fecha">8 de julio de 2026</span></div>
+                <h2 class="titulo-noticia">La cuenta regresiva</h2>
+                <p class="descripcion-noticia">Video especial de entrada de Pulso Deportivo, creado para captar la atención del público desde el inicio.</p>
+                <div class="autor-tarjeta">🎥 Clic para ver el video</div>
+            </a>
+        </section>
+
+        <section id="noticias-principales" class="grid-noticias">
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-1', event)" class="tarjeta-noticia">
+                <img src="001Noticia1.jpg" alt="Selección de Ecuador" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">10 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">¡Vamos Ecuador! La Tri alcanzó su quinta clasificación a la Copa Mundial, de forma anticipada</h2>
+                <p class="descripcion-noticia">Ecuador aseguró su clasificación al Mundial 2026 el 10 de junio de 2026, tras empatar con Perú en Lima...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-2', event)" class="tarjeta-noticia">
+                <img src="001Noticia2.jpg" alt="Fútbol Femenino" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">‘El fútbol femenino vive un momento de quiebre’, advierte Fernanda Vásconez, exdirigente del Club Ñañas</h2>
+                <p class="descripcion-noticia">Fernanda Vásconez, fundadora del Club Ñañas, afirmó que el fútbol femenino ecuatoriano atraviesa un momento clave...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-3', event)" class="tarjeta-noticia">
+                <img src="001Noticia3.jpg" alt="Wesley Brasil" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">7 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">Brasil pierde a Wesley por lesión para el Mundial 2026 y Carlo Ancelotti llama a Éderson como reemplazo</h2>
+                <p class="descripcion-noticia">Brasil sufrió una baja importante a la etapa previa al inicio del Mundial 2026. El lateral derecho Wesley quedó fuera...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-4', event)" class="tarjeta-noticia">
+                <img src="001Noticia4.jpg" alt="Ranking FIFA" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">Ecuador cae al puesto 24 del ranking FIFA previo a su debut en el Mundial 2026</h2>
+                <p class="descripcion-noticia">La FIFA actualizó el ranking mundial de selecciones tras la disputa de los primeros partidos amistosos previos al Mundial 2026...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-5', event)" class="tarjeta-noticia">
+                <img src="001Noticia5.jpg" alt="Ecuador Mundial" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">5 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">Ecuador llega con ilusión y solidez a su debut mundialista</h2>
+                <p class="descripcion-noticia">La selección ecuatoriana de fútbol se prepara para afrontar una nueva participación en la Copa Mundial de la FIFA 2026...</p>
+                <div class="autor-tarjeta">Por: Carlos Suárez</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-6', event)" class="tarjeta-noticia">
+                <img src="001Noticia10.jpg" alt="Fórmula 1" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">4 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">Fórmula 1 entra en su etapa más competitiva de la temporada</h2>
+                <p class="descripcion-noticia">Los circuitos mundiales se preparan para recibir las carreras más exigentes del año. Analistas de velocidad destacan que las escuderías...</p>
+                <div class="autor-tarjeta">Por: Doménica Vite</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-7', event)" class="tarjeta-noticia">
+                <img src="001Noticia7.jpg" alt="Estudiantes Facso" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">3 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">Estudiantes de FACSO impulsan propuestas innovadoras en periodismo digital</h2>
+                <p class="descripcion-noticia">La academia destaca la participación activa de los universitarios de periodismo en el desarrollo de portales digitales multimedia complejos...</p>
+                <div class="autor-tarjeta">Por: José Mayorga</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-8', event)" class="tarjeta-noticia">
+                <img src="001Noticia8.jpg" alt="Real Madrid Competitivo" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">2 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">Real Madrid y su lucha por mantenerse competitivo en Europa</h2>
+                <p class="descripcion-noticia">El Real Madrid continúa siendo uno de los clubes más importantes y reconocidos del fútbol europeo...</p>
+                <div class="autor-tarjeta">Por: Dayna Jiménez</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-9', event)" class="tarjeta-noticia">
+                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%221200%22%20height%3D%22720%22%20viewBox%3D%220%200%201200%20720%22%3E%0A%3Cdefs%3E%0A%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230d6efd%22/%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2327ae60%22/%3E%0A%3C/linearGradient%3E%0A%3C/defs%3E%0A%3Crect%20width%3D%221200%22%20height%3D%22720%22%20fill%3D%22url%28%23g%29%22/%3E%0A%3Ccircle%20cx%3D%22230%22%20cy%3D%22160%22%20r%3D%2295%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.18%29%22/%3E%0A%3Ccircle%20cx%3D%22980%22%20cy%3D%22570%22%20r%3D%22130%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.16%29%22/%3E%0A%3Crect%20x%3D%22110%22%20y%3D%22110%22%20width%3D%22980%22%20height%3D%22500%22%20rx%3D%2228%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.88%29%22%20stroke%3D%22%23111%22%20stroke-width%3D%228%22/%3E%0A%3Ctext%20x%3D%22600%22%20y%3D%22265%22%20text-anchor%3D%22middle%22%20font-family%3D%22Montserrat%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2270%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3EFACSO%3C/text%3E%0A%3Ctext%20x%3D%22600%22%20y%3D%22350%22%20text-anchor%3D%22middle%22%20font-family%3D%22Montserrat%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2248%22%20font-weight%3D%22800%22%20fill%3D%22%23111%22%3EIntegraci%C3%B3n%20Deportiva%3C/text%3E%0A%3Ctext%20x%3D%22600%22%20y%3D%22430%22%20text-anchor%3D%22middle%22%20font-family%3D%22Montserrat%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2234%22%20font-weight%3D%22700%22%20fill%3D%22%230d6efd%22%3ETorneo%20Interfacultades%3C/text%3E%0A%3Ctext%20x%3D%22600%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Montserrat%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%2327ae60%22%3EUniversidad%20de%20Guayaquil%3C/text%3E%0A%3Ccircle%20cx%3D%22600%22%20cy%3D%22590%22%20r%3D%2238%22%20fill%3D%22%23fff%22%20stroke%3D%22%23111%22%20stroke-width%3D%226%22/%3E%0A%3Cpath%20d%3D%22M600%20552%20L623%20580%20L614%20622%20H586%20L577%20580%20Z%22%20fill%3D%22%23111%22/%3E%0A%3C/svg%3E" alt="FACSO Integración Deportiva - Torneo Interfacultades" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">FACSO: Integración Deportiva se prepara para el torneo interfacultades</h2>
+                <p class="descripcion-noticia">El 8 de junio de 2026 dará inicio el esperado torneo de fútbol interfacultades de la Universidad de Guayaquil...</p>
+                <div class="autor-tarjeta">Por: José Mayorga</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-10', event)" class="tarjeta-noticia">
+                <img src="001F1kimi.jpg" alt="Kimi Antonelli Mónaco" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">7 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">Kimi Antonelli se lleva la victoria en Mónaco</h2>
+                <p class="descripcion-noticia">El Gran Premio de Mónaco 2026 volvió a ofrecer una carrera llena de emoción, estrategia y momentos de tensión...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-11', event)" class="tarjeta-noticia">
+                <img src="001Noticia11.jpg" alt="Hernán Galíndez" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">Hernán Galíndez, arquero de Ecuador, y su optimismo para el Mundial 2026: ‘Estamos para competir’</h2>
+                <p class="descripcion-noticia">Hernán Galíndez es el portero de la selección ecuatoriana de fútbol y durante 2026 disputará su segundo Mundial...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-12', event)" class="tarjeta-noticia">
+                <img src="001Noticia12.jpg" alt="Emelec Nasuti" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 de junio de 2026</span></div>
+                <h2 class="titulo-noticia">Continuidad de Cristian Nasuti en Emelec genera opiniones divididas</h2>
+                <p class="descripcion-noticia">El Club Sport Emelec tomó la decisión de ratificar a Cristian Nasuti como director técnico principal junto con Javier Klimowicz...</p>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-13', event)" class="tarjeta-noticia">
+                <img src="001Noticia13 - Noticia 13 - Bélgica golea a Estados Unidos y confirma su candidatura al título.jpg" onerror="this.onerror=null; this.src='001Noticia13.jpg';" alt="Bélgica golea a Estados Unidos y confirma su candidatura al título" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+                <h2 class="titulo-noticia">Bélgica golea a Estados Unidos y confirma su candidatura al título</h2>
+                <p class="descripcion-noticia">Bélgica dio un golpe de autoridad en los octavos de final del Mundial 2026 al vencer con un contundente 4-1 a Estados Unidos, demostrando todo su potencial ofensivo y asegurando su lugar entre las ocho mejores selecciones del torneo...</p>
+                <div class="autor-tarjeta">Por: Redacción Pulso Deportivo</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-14', event)" class="tarjeta-noticia">
+                <img src="001Noticia14 - Noticia 14 - Colombia se despide del Mundial 2026 tras caer en penales ante Suiza.jpg" onerror="this.onerror=null; this.src='001Noticia14.jpg';" alt="Colombia se despide del Mundial 2026 tras caer en penales ante Suiza" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+                <h2 class="titulo-noticia">Colombia se despide del Mundial 2026 tras caer en penales ante Suiza</h2>
+                <p class="descripcion-noticia">La selección cafetera quedó eliminada en los octavos de final luego de caer en la tanda de penales frente a una sólida selección de Suiza...</p>
+                <div class="autor-tarjeta">Por: Redacción Pulso Deportivo</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-15', event)" class="tarjeta-noticia">
+                <img src="001Noticia15 - Noticia 15 - Ecuador hace historia y elimina a Alemania del Mundial 2026.jpg" onerror="this.onerror=null; this.src='001Noticia15.jpg';" alt="Ecuador hace historia y elimina a Alemania del Mundial 2026" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+                <h2 class="titulo-noticia">Ecuador hace historia y elimina a Alemania del Mundial 2026</h2>
+                <p class="descripcion-noticia">La Tri mostró carácter, orden y personalidad para imponerse ante una de las selecciones más tradicionales del fútbol mundial...</p>
+                <div class="autor-tarjeta">Por: Redacción Pulso Deportivo</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-16', event)" class="tarjeta-noticia">
+                <img src="001Noticia16 - Noticia 16 - El Mundial 2026 comienza a despedir a sus grandes leyendas.jpg" onerror="this.onerror=null; this.src='001Noticia16.jpg';" alt="El Mundial 2026 comienza a despedir a sus grandes leyendas" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+                <h2 class="titulo-noticia">El Mundial 2026 comienza a despedir a sus grandes leyendas</h2>
+                <p class="descripcion-noticia">Varias figuras del fútbol internacional quedaron fuera de competencia, mientras Lionel Messi y Argentina siguen en carrera tras vencer a Egipto...</p>
+                <div class="autor-tarjeta">Por: Redacción Pulso Deportivo</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-17', event)" class="tarjeta-noticia">
+                <img src="001Noticia17 - Noticia 17 - España elimina a Portugal y continúa su camino hacia el título.jpg" onerror="this.onerror=null; this.src='001Noticia17.jpg';" alt="España elimina a Portugal y continúa su camino hacia el título" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+                <h2 class="titulo-noticia">España elimina a Portugal y continúa su camino hacia el título</h2>
+                <p class="descripcion-noticia">España logró su clasificación a los cuartos de final luego de derrotar por 1-0 a Portugal en un intenso duelo ibérico...</p>
+                <div class="autor-tarjeta">Por: Redacción Pulso Deportivo</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-18', event)" class="tarjeta-noticia">
+                <img src="001Noticia18 - Noticia 18 - Todo listo para los cuartos de final del Mundial 2026.jpg" onerror="this.onerror=null; this.src='001Noticia18.jpg';" alt="Todo listo para los cuartos de final del Mundial 2026" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+                <h2 class="titulo-noticia">Todo listo para los cuartos de final del Mundial 2026</h2>
+                <p class="descripcion-noticia">Solo ocho selecciones continúan con vida y todas sueñan con levantar el trofeo más importante del fútbol mundial...</p>
+                <div class="autor-tarjeta">Por: Redacción Pulso Deportivo</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-19', event)" class="tarjeta-noticia">
+                <img src="001Noticia19 - Noticia 19 - México será el rival de Ecuador en los octavos de final.jpg" onerror="this.onerror=null; this.src='001Noticia19.jpg';" alt="México será el rival de Ecuador en los octavos de final" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+                <h2 class="titulo-noticia">México será el rival de Ecuador en los octavos de final</h2>
+                <p class="descripcion-noticia">Ecuador enfrentará a México en un partido de alto nivel que definirá cuál de los dos equipos avanzará a la siguiente ronda...</p>
+                <div class="autor-tarjeta">Por: Redacción Pulso Deportivo</div>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-20', event)" class="tarjeta-noticia">
+                <img src="001Noticia20 - Noticia 20 - México derrota a Ecuador y termina el sueño mundialista de La Tri.jpg" onerror="this.onerror=null; this.src='001Noticia20.jpg';" alt="México derrota a Ecuador y termina el sueño mundialista de La Tri" class="imagen-noticia">
+                <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+                <h2 class="titulo-noticia">México derrota a Ecuador y termina el sueño mundialista de La Tri</h2>
+                <p class="descripcion-noticia">Ecuador cayó por 2-0 ante México en los octavos de final y quedó eliminado de la Copa del Mundo...</p>
+                <div class="autor-tarjeta">Por: Redacción Pulso Deportivo</div>
+            </a>
+        </section>
+
+        <section id="listado-noticias" class="seccion-lista">
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-1', event)" class="fila-noticia">
+                <span class="numero-lista">01</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">¡Vamos Ecuador! La Tri alcanzó su quinta clasificación a la Copa Mundial, de forma anticipada</span><span class="fecha-lista">10 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-2', event)" class="fila-noticia">
+                <span class="numero-lista">02</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">‘El fútbol femenino vive un momento de quiebre’, advierte Fernanda Vásconez, exdirigente del Club Ñañas</span><span class="fecha-lista">8 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-3', event)" class="fila-noticia">
+                <span class="numero-lista">03</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Brasil pierde a Wesley por lesión para el Mundial 2026 y Carlo Ancelotti llama a Éderson como reemplazo</span><span class="fecha-lista">7 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-4', event)" class="fila-noticia">
+                <span class="numero-lista">04</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Ecuador cae al puesto 24 del ranking FIFA previo a su debut en el Mundial 2026</span><span class="fecha-lista">6 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-5', event)" class="fila-noticia">
+                <span class="numero-lista">05</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Ecuador llega con ilusión y solidez a su debut mundialista</span><span class="fecha-lista">5 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-6', event)" class="fila-noticia">
+                <span class="numero-lista">06</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Fórmula 1 entra en su etapa más competitiva de la temporada</span><span class="fecha-lista">4 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-7', event)" class="fila-noticia">
+                <span class="numero-lista">07</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Estudiantes de FACSO impulsan propuestas innovadoras en periodismo digital</span><span class="fecha-lista">3 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-8', event)" class="fila-noticia">
+                <span class="numero-lista">08</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Real Madrid y su lucha por mantenerse competitivo en Europa</span><span class="fecha-lista">2 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-9', event)" class="fila-noticia">
+                <span class="numero-lista">09</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">FACSO: Integración Deportiva se prepara para el torneo interfacultades</span><span class="fecha-lista">6 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-10', event)" class="fila-noticia">
+                <span class="numero-lista">10</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Kimi Antonelli se lleva la victoria en Mónaco</span><span class="fecha-lista">7 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-11', event)" class="fila-noticia">
+                <span class="numero-lista">11</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Hernán Galíndez, arquero de Ecuador, y su optimismo para el Mundial 2026: ‘Estamos para competir’</span><span class="fecha-lista">6 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-12', event)" class="fila-noticia">
+                <span class="numero-lista">12</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Continuidad de Cristian Nasuti en Emelec genera opiniones divididas</span><span class="fecha-lista">6 de junio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-13', event)" class="fila-noticia">
+                <span class="numero-lista">13</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Bélgica golea a Estados Unidos y confirma su candidatura al título</span><span class="fecha-lista">8 de julio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-14', event)" class="fila-noticia">
+                <span class="numero-lista">14</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Colombia se despide del Mundial 2026 tras caer en penales ante Suiza</span><span class="fecha-lista">8 de julio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-15', event)" class="fila-noticia">
+                <span class="numero-lista">15</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Ecuador hace historia y elimina a Alemania del Mundial 2026</span><span class="fecha-lista">8 de julio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-16', event)" class="fila-noticia">
+                <span class="numero-lista">16</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">El Mundial 2026 comienza a despedir a sus grandes leyendas</span><span class="fecha-lista">8 de julio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-17', event)" class="fila-noticia">
+                <span class="numero-lista">17</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">España elimina a Portugal y continúa su camino hacia el título</span><span class="fecha-lista">8 de julio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-18', event)" class="fila-noticia">
+                <span class="numero-lista">18</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">Todo listo para los cuartos de final del Mundial 2026</span><span class="fecha-lista">8 de julio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-19', event)" class="fila-noticia">
+                <span class="numero-lista">19</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">México será el rival de Ecuador en los octavos de final</span><span class="fecha-lista">8 de julio de 2026</span>
+            </a>
+            <a href="javascript:void(0);" onclick="mostrarNoticia('noticia-20', event)" class="fila-noticia">
+                <span class="numero-lista">20</span><span class="etiqueta-lista">DEPORTES</span><span class="titulo-lista">México derrota a Ecuador y termina el sueño mundialista de La Tri</span><span class="fecha-lista">8 de julio de 2026</span>
+            </a>
+        </section>
+
+
+
+        <!-- Apartado solicitado: enlaces oficiales de Pulso Deportivo. -->
+        <section id="redes-sociales" class="seccion-redes" aria-labelledby="titulo-redes">
+            <h2 id="titulo-redes">Redes oficiales de Pulso Deportivo</h2>
+            <p class="texto-redes">Sigue el contenido deportivo en las plataformas oficiales del medio: TikTok, Instagram, X y YouTube.</p>
+            <div class="grid-redes">
+                <a href="https://www.tiktok.com/@pulsodeportivok?_r=1&_t=ZS-97rUTL13u6f" target="_blank" rel="noopener noreferrer" class="tarjeta-red">
+                    <span class="icono-red">🎵</span>
+                    <strong>TikTok</strong>
+                    <span>@pulsodeportivok</span>
+                </a>
+                <a href="https://www.instagram.com/pulsodeportivoec_?igsh=YWdoY3lnZWVkNWs4&utm_source=qr" target="_blank" rel="noopener noreferrer" class="tarjeta-red">
+                    <span class="icono-red">📸</span>
+                    <strong>Instagram</strong>
+                    <span>@pulsodeportivoec_</span>
+                </a>
+                <a href="https://x.com/pulsodeportivok?s=11" target="_blank" rel="noopener noreferrer" class="tarjeta-red">
+                    <span class="icono-red">𝕏</span>
+                    <strong>X</strong>
+                    <span>@pulsodeportivok</span>
+                </a>
+                <a href="https://youtube.com/@pulsodeportivo-p2l?si=h51pBJMrXLp3NOX0" target="_blank" rel="noopener noreferrer" class="tarjeta-red">
+                    <span class="icono-red">▶️</span>
+                    <strong>YouTube</strong>
+                    <span>@pulsodeportivo-p2l</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Corrección docente: se conserva y refuerza el scroll informativo valorado positivamente. -->
+        <section class="ticker-container" aria-label="Scroll informativo de titulares deportivos">
+            <div class="ticker-titulo">Pulso informativo</div>
+            <div class="ticker-wrap">
+                <div class="ticker-track">
+                    <span>Ecuador aseguró su quinta clasificación mundialista.</span>
+                    <span>FACSO prepara su participación en el torneo interfacultades.</span>
+                    <span>El fútbol femenino ecuatoriano exige mayor estructura.</span>
+                    <span>La Fórmula 1 intensifica la pelea por el campeonato.</span>
+                    <span>Bélgica avanzó a cuartos de final tras golear a Estados Unidos.</span>
+                    <span>Ecuador hizo historia al eliminar a Alemania del Mundial 2026.</span>
+                    <span>Pulso Deportivo comparte contenido en TikTok, Instagram, X y YouTube.</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <main id="noticia-1" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">10 de junio de 2026</span></div>
+        <h1>¡Vamos Ecuador! La Tri alcanzó su quinta clasificación a la Copa Mundial, de forma anticipada</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>10 de junio de 2026</span>
+        </div>
+        <img src="001Noticia1.jpg" alt="Selección de Ecuador" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Ecuador aseguró su clasificación al Mundial 2026 el 10 de junio de 2026, tras empatar con Perú en Lima.</p>
+            <p>El medio destacó que la selección cuenta con una generación joven, una defensa sólida y jugadores con experiencia internacional, factores que fortalecen las aspiraciones del equipo en la competición mundialista.</p>
+        </div>
+    </main>
+
+    <main id="noticia-2" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de junio de 2026</span></div>
+        <h1>‘El fútbol femenino vive un momento de quiebre’, advierte Fernanda Vásconez, exdirigente del Club Ñañas</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de junio de 2026</span>
+        </div>
+        <img src="001Noticia2.jpg" alt="Fútbol Femenino" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Fernanda Vásconez, fundadora del Club Ñañas, afirmó que el fútbol femenino ecuatoriano atraviesa un momento clave para su desarrollo. Señaló que, aunque las jugadoras han demostrado un gran nivel y potencial, la falta de estabilidad económica en los clubes pone en riesgo el crecimiento alcanzado en los últimos años.</p>
+            <p>Vásconez explicó que muchos clubes enfrentan dificultades para sostenerse financieramente y consideró necesario realizar cambios estructurales, como la creación de un departamento exclusivo para el fútbol femenino que impulse la gestión comercial, los patrocinios y la formación de una base sólida de aficionados.</p>
+            <p>Además, criticó que al fútbol femenino se le exijan los mismos requisitos que al masculino, pese a que este deporte tuvo décadas para consolidarse. Finalmente, reveló que dejó la dirigencia de Ñañas al cumplir el límite legal de periodos permitidos y confirmó que el club decidió no participar en la Superliga Femenina en la edición 2026 debido a desacuerdos con el modelo actual de la competición.</p>
+        </div>
+    </main>
+
+    <main id="noticia-3" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">7 de junio de 2026</span></div>
+        <h1>Brasil pierde a Wesley por lesión para el Mundial 2026 y Carlo Ancelotti llama a Éderson como reemplazo</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>7 de junio de 2026</span>
+        </div>
+        <img src="001Noticia3.jpg" alt="Wesley Brasil" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Brasil sufrió una baja importante a la etapa previa al inicio del Mundial 2026. El lateral derecho Wesley quedó fuera de la convocatoria tras sufrir una lesión muscular en el aductor del muslo izquierdo durante el amistoso ante Egipto. El jugador abandonó el campo lesionado y posteriormente los exámenes médicos confirmaron que no podrá participar en el torneo.</p>
+            <p>Ante esta situación, el seleccionador Carlo Ancelotti decidió convocar al mediocampista Ederson para reemplazarlo en la lista mundialista. La Confederación Brasileña de Fútbol lamentó la lesión de Wesley, quien era una pieza importante del equipo.</p>
+            <p>La ausencia de Wesley obliga a Brasil a reorganizar su defensa de cara al Mundial, donde debutará en la fase de grupos frente a Marruecos.</p>
+        </div>
+    </main>
+
+    <main id="noticia-4" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 de junio de 2026</span></div>
+        <h1>Ecuador cae al puesto 24 del ranking FIFA previo a su debut en el Mundial 2026</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>6 de junio de 2026</span>
+        </div>
+        <img src="001Noticia4.jpg" alt="Ranking FIFA" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>La FIFA actualizó el ranking mundial de selecciones tras la disputa de los primeros partidos amistosos previos al Mundial 2026, que se celebrará en Estados Unidos, Canadá y México.</p>
+            <p>La selección ecuatoriana descendió al puesto 24 del ranking FIFA en la previa del inicio de la Copa Mundial 2026. A pesar de este retroceso en la clasificación internacional, el equipo mantiene altas expectativas gracias a su rendimiento durante las eliminatorias y al nivel mostrado por varios de sus jugadores en el fútbol europeo.</p>
+        </div>
+    </main>
+
+    <main id="noticia-5" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">5 de junio de 2026</span></div>
+        <h1>Ecuador llega con ilusión y solidez a su debut mundialista</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Carlos Suárez</span></span>
+            <span class="autor-separador">•</span>
+            <span>5 de junio de 2026</span>
+        </div>
+        <img src="001Noticia5.jpg" alt="Ecuador Mundial" class="imagen-principal">
+        
+        <a href="001LinkvidMundial" target="_blank" class="btn-video">🎥 Ver Noticia / Video</a>
+
+        <div class="cuerpo-texto">
+            <p>La selección ecuatoriana de fútbol se prepara para afrontar una nueva participación en la Copa Mundial de la FIFA 2026, torneo que se disputará en Estados Unidos, México y Canadá. La Tricolor llega a esta cita tras una destacada campaña en las Eliminatorias Sudamericanas, donde logró asegurar su clasificación de manera anticipada.</p>
+            <p>Bajo la dirección técnica de Sebastián Beccacece, Ecuador ha consolidado un equipo caracterizado por su orden táctico, una defensa sólida y la presencia de futbolistas que militan en importantes ligas internacionales. Jugadores como Moisés Caicedo, Piero Hincapié, Willian Pacho y Enner Valencia se perfilan como piezas fundamentales para las aspiraciones del combinado nacional.</p>
+            <p>Uno de los aspectos más destacados del proceso clasificatorio fue la capacidad defensiva del equipo, que recibió pocos goles durante las eliminatorias y se mantuvo entre las selecciones más regulares de Sudamérica. Además, la combinación de experiencia y juventud ha generado optimismo entre la afición ecuatoriana.</p>
+            <p>El debut de Ecuador en el Mundial genera grandes expectativas. La meta inicial será superar la fase de grupos y buscar igualar o mejorar la histórica actuación de Alemania 2006, cuando la Tricolor alcanzó los octavos de final. La afición ecuatoriana espera que esta generación de futbolistas pueda escribir una nueva página en la historia del fútbol nacional y consolidar a Ecuador como una de las selecciones emergentes del continente.</p>
+        </div>
+    </main>
+
+    <main id="noticia-6" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">4 de junio de 2026</span></div>
+        <h1>Fórmula 1 entra en su etapa más competitiva de la temporada</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Doménica Vite</span></span>
+            <span class="autor-separador">•</span>
+            <span>4 de junio de 2026</span>
+        </div>
+        <img src="001Noticia10.jpg" alt="Fórmula 1 Carrera" class="imagen-principal">
+        
+        <a href="001LinkvidMonaco" target="_blank" class="btn-video">🎥 Ver Noticia / Video</a>
+
+        <div class="cuerpo-texto">
+            <p>Los circuitos de la máxima categoría del automovilismo entran en su fase más crítica del año. Con la evolución de los monoplazas y los constantes cambios de estrategias en los pits, las principales escuderías buscan ajustar cada milímetro de sus configuraciones mecánicas y aerodinámicas para asegurar los campeonatos globales.</p>
+            <p>Expertos de velocidad afirman que las destrezas de manejo bajo presión y las cambiantes condiciones climáticas serán determinantes en las fechas restantes del calendario de carrera, donde cualquier error en la pista podría costar el podio definitivo.</p>
+        </div>
+    </main>
+
+    <main id="noticia-7" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">3 de junio de 2026</span></div>
+        <h1>Estudiantes de FACSO impulsan propuestas innovadoras en periodismo digital</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">José Mayorga</span></span>
+            <span class="autor-separador">•</span>
+            <span>3 de junio de 2026</span>
+        </div>
+        <img src="001Noticia7.jpg" alt="Estudiantes Periodismo" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>La Facultad de Comunicación Social avanza firmemente en la integración de plataformas interactivas y narrativas transmedia. Universitarios de las carreras de periodismo han tomado la iniciativa de digitalizar contenidos tradicionales mediante el desarrollo autónomo de entornos web optimizados para el consumo masivo de crónicas de calle, reportajes deportivos y piezas audiovisuales.</p>
+            <p>Este esfuerzo de innovación académica demuestra cómo las nuevas generaciones asimilan de forma proactiva las herramientas de programación estructural modernas y el diseño de experiencia de usuario (UX/UI) aplicado a entornos informativos de gran rigor periodístico.</p>
+        </div>
+    </main>
+
+    <main id="noticia-8" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">2 de junio de 2026</span></div>
+        <h1>Real Madrid y su lucha por mantenerse competitivo en Europa</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Dayna Jiménez</span></span>
+            <span class="autor-separador">•</span>
+            <span>2 de junio de 2026</span>
+        </div>
+        <img src="001Noticia8.jpg" alt="Real Madrid Competitivo" class="imagen-principal">
+        
+        <a href="001LinkvidMadrid" target="_blank" class="btn-video">🎥 Ver Noticia / Video</a>
+
+        <div class="cuerpo-texto">
+            <p>El Real Madrid continúa siendo uno de los clubes más importantes y reconocidos del fútbol europeo, manteniendo una presencia constante en las competiciones internacionales más exigentes. A lo largo de los años, el equipo español ha logrado construir una historia marcada por títulos, jugadores emblemáticos y una fuerte identidad competitiva que lo convierte en uno de los principales candidatos en cada torneo que disputa.</p>
+            <p>El club enfrenta el reto de mantenerse al más alto nivel frente a equipos que cada temporada fortalecen sus plantillas y elevan la intensidad de la competencia. A pesar de ello, el Real Madrid ha demostrado capacidad para adaptarse a los cambios, combinando la experiencia de futbolistas consolidados con la participación de jóvenes talentos que han comenzado a destacar dentro y fuera de España.</p>
+            <p>Uno de los aspectos más importantes del equipo ha sido la preparación táctica y física. El cuerpo técnico ha buscado mantener un equilibrio entre la defensa y el ataque, apostando por un estilo de juego dinámico que permita responder a rivales de gran nivel competitivo. Además, la rotación de jugadores ha sido clave para afrontar calendarios exigentes, especialmente cuando deben disputar varios partidos en poco tiempo entre competencias nacionales e internacionales.</p>
+        </div>
+    </main>
+
+    <main id="noticia-9" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 de junio de 2026</span></div>
+        <h1>FACSO: Integración Deportiva se prepara para el torneo interfacultades</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">José Mayorga</span></span>
+            <span class="autor-separador">•</span>
+            <span>6 de junio de 2026</span>
+        </div>
+        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%221200%22%20height%3D%22720%22%20viewBox%3D%220%200%201200%20720%22%3E%0A%3Cdefs%3E%0A%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230d6efd%22/%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2327ae60%22/%3E%0A%3C/linearGradient%3E%0A%3C/defs%3E%0A%3Crect%20width%3D%221200%22%20height%3D%22720%22%20fill%3D%22url%28%23g%29%22/%3E%0A%3Ccircle%20cx%3D%22230%22%20cy%3D%22160%22%20r%3D%2295%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.18%29%22/%3E%0A%3Ccircle%20cx%3D%22980%22%20cy%3D%22570%22%20r%3D%22130%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.16%29%22/%3E%0A%3Crect%20x%3D%22110%22%20y%3D%22110%22%20width%3D%22980%22%20height%3D%22500%22%20rx%3D%2228%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.88%29%22%20stroke%3D%22%23111%22%20stroke-width%3D%228%22/%3E%0A%3Ctext%20x%3D%22600%22%20y%3D%22265%22%20text-anchor%3D%22middle%22%20font-family%3D%22Montserrat%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2270%22%20font-weight%3D%22900%22%20fill%3D%22%23111%22%3EFACSO%3C/text%3E%0A%3Ctext%20x%3D%22600%22%20y%3D%22350%22%20text-anchor%3D%22middle%22%20font-family%3D%22Montserrat%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2248%22%20font-weight%3D%22800%22%20fill%3D%22%23111%22%3EIntegraci%C3%B3n%20Deportiva%3C/text%3E%0A%3Ctext%20x%3D%22600%22%20y%3D%22430%22%20text-anchor%3D%22middle%22%20font-family%3D%22Montserrat%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2234%22%20font-weight%3D%22700%22%20fill%3D%22%230d6efd%22%3ETorneo%20Interfacultades%3C/text%3E%0A%3Ctext%20x%3D%22600%22%20y%3D%22505%22%20text-anchor%3D%22middle%22%20font-family%3D%22Montserrat%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2230%22%20font-weight%3D%22700%22%20fill%3D%22%2327ae60%22%3EUniversidad%20de%20Guayaquil%3C/text%3E%0A%3Ccircle%20cx%3D%22600%22%20cy%3D%22590%22%20r%3D%2238%22%20fill%3D%22%23fff%22%20stroke%3D%22%23111%22%20stroke-width%3D%226%22/%3E%0A%3Cpath%20d%3D%22M600%20552%20L623%20580%20L614%20622%20H586%20L577%20580%20Z%22%20fill%3D%22%23111%22/%3E%0A%3C/svg%3E" alt="FACSO Integración Deportiva - Torneo Interfacultades" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>El 8 de junio de 2026 dará inicio el esperado torneo de fútbol interfacultades de la Universidad de Guayaquil. Los equipos femenino y masculino de la Facultad de Comunicación Social (FACSO) se alistan para representar a su facultad en esta competencia que reunirá a estudiantes de distintas carreras.</p>
+            <p>En la jornada inaugural, los chicos de FACSO, quienes han decidido jugar bajo la representación del equipo Alemania, se enfrentarán contra la facultad que eligió como selección a Inglaterra. El encuentro promete ser vibrante y marcará el inicio de un campeonato lleno de emoción, talento y espíritu universitario.</p>
+            <p>Cabe destacar que el conjunto de FACSO está dirigido por el Licenciado Víctor Vera, quien ha trabajado en la preparación y motivación de el grupo estudiantil para afrontar este reto deportivo.</p>
+            <p>Este torneo de fútbol no solo busca fomentar la práctica deportiva, sino también fortalecer la integración y el compañerismo entre las facultades de la institución.</p>
+        </div>
+    </main>
+
+    <main id="noticia-10" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">7 de junio de 2026</span></div>
+        <h1>Kimi Antonelli se lleva la victoria en Mónaco</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Domenica Vite</span></span>
+            <span class="autor-separador">•</span>
+            <span>7 de junio de 2026</span>
+        </div>
+        <img src="001F1kimi.jpg" alt="Kimi Antonelli Mónaco" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>El Gran Premio de Mónaco 2026 volvió a ofrecer una carrera llena de emoción, estrategia y momentos de tensión en las estrechas calles de Montecarlo. En esta ocasión, el gran vencedor fue Kimi Antonelli, piloto de Mercedes, quien logró una destacada actuación para quedarse con el primer lugar y sumar una nueva victoria en la temporada.</p>
+            <p>Desde el inicio de la competencia, Antonelli mostró un gran rendimiento y consiguió mantener el liderato a pesar de la presión de sus rivales. Gracias a una conducción sólida y una estrategia efectiva por parte de su equipo, el piloto italiano logró controlar la carrera y cruzar la línea de meta en la primera posición.</p>
+            <p>El segundo lugar fue para Lewis Hamilton, de Ferrari, quien tuvo una actuación consistente y se mantuvo entre los primeros puestos durante toda la prueba. Por su parte, Isack Hadjar, de Red Bull, completó el podio tras una destacada carrera que le permitió sumar puntos importantes para su equipo.</p>
+            <p>La competencia estuvo marcada por varios incidentes en pista y algunos abandonos que modificaron el desarrollo de la carrera. Estos acontecimientos obligaron a los equipos a replantear sus estrategias y mantuvieron la expectativa entre los aficionados hasta las últimas vueltas.</p>
+            <p>Con este triunfo, Antonelli consigue una de las victorias más importantes de su carrera y fortalece su posición como líder del campeonato mundial de Fórmula 1. Además, continúa consolidándose como una de las grandes promesas de la categoría y uno de los pilotos más destacados de la temporada 2026.</p>
+            <p>El Gran Premio de Mónaco volvió a demostrar por qué es una de las carreras más prestigiosas del calendario, ofreciendo un espectáculo lleno de velocidad, precisión competitiva que mantuvo la atención de los seguidores del automovilismo de principio a fin.</p>
+        </div>
+    </main>
+
+    <main id="noticia-11" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 de junio de 2026</span></div>
+        <h1>Hernán Galíndez, arquero de Ecuador, y su optimismo para el Mundial 2026: ‘Estamos para competir, no hay rival invencible’</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">El Universo</span></span>
+            <span class="autor-separador">•</span>
+            <span>6 de junio de 2026</span>
+        </div>
+        <img src="001Noticia11.jpg" alt="Hernán Galíndez" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Hernán Galíndez es el portero de la selección ecuatoriana de fútbol y durante 2026 disputará su segundo Mundial con el combinado nacional. Galíndez, de 39 años, nacido en Rosario, Argentina, pero ecuatoriano por naturalización, insiste en su orgullo de ser tricolor y tras haber tenido su experiencia en el certamen de Qatar 2022, cree que para el actual llega con más “madurez”.</p>
+            <p>El arquero explicó que la experiencia obtenida en Qatar 2022 fortaleció la madurez del grupo. También señaló que el trabajo psicológico y la preparación deportiva serán factores importantes para competir con mayor seguridad en la Copa Mundial 2026.</p>
+            <p>El portero del combinado nacional analizó también a los rivales que tendrá la selección tricolor. “En un mundial no hay rival que vos digas ‘a este le vamos a ganar seguro’. Eso no existe. Sabemos que Costa de Marfil es un equipo muy físico, que la mayoría juega en la liga francesa y en la Premier League. Un rival durísimo. Curazao tiene la particularidad de que va a ser su primer mundial y que se van a jugar el sueño de un país. Otro partido durísimo. Y Alemania es Alemania. Tenemos que tratar de ir partido a partido, de entender que los tres partidos te dan tres puntos, de no hacer cuentas. Creo que podemos ser muy competitivos contra cualquier rival. Lo hemos demostrado”, añadió en entrevista con el portal de la FIFA.</p>
+            <p>Y continuó: “Yo creo que estamos para competir. Para seguir por el camino que venimos, para seguir demostrando la evolución que tenemos, como equipo, como grupo, para no sentirnos ni más ni menos que nadie, para entender que todos los partidos tienen riesgo y que todos los partidos se pueden ganar, que no hay ningún rival invencible ni tampoco un rival al cual le vamos a ganar fácil. Confiamos mucho en nosotros”.</p>
+        </div>
+    </main>
+
+    <main id="noticia-12" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">6 de junio de 2026</span></div>
+        <h1>Continuidad de Cristian Nasuti en Emelec genera opiniones divididas</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Jose Mayorga Cardenas</span></span>
+            <span class="autor-separador">•</span>
+            <span>6 de junio de 2026</span>
+        </div>
+        <img src="001Noticia12.jpg" alt="Emelec Nasuti" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>El Club Sport Emelec tomó la decisión de ratificar a Cristian Nasuti como director técnico principal junto con Javier Klimowicz, como asistente, y Rodrigo Figueroa, en el rol de preparador físico. El acuerdo es en principio hasta el final de la temporada. Sin embargo, Luis Miguel Escalada, director deportivo del club, le dijo a EL UNIVERSO que si se cumplen los objetivos, habría la posibilidad de extender el vínculo.</p>
+            <p>Para Doménica González, periodista de Fanboleros, el hecho de que el argentino haya sido parte de procesos anteriores será vital para su labor en el club en su etapa como estratega principal. “La continuidad de Nasuti le viene bien a Emelec. Es parte del club, ha sido parte de varios procesos, en el proceso reciente con Vicente Sánchez. Conoce muy bien a los jugadores y tiene esa capacidad de poder conectar con los jugadores porque ha estado en ambas facetas: la de jugador y DT”, sostuvo González.</p>
+            <p>“Le va a servir en la segunda etapa, donde debe sacar puntos para seguir escalando posiciones y alcanzar una clasificación internacional para la temporada 2027, que hace muchos años Emelec no logra concretarlo. Nasuti le va a venir bien”, complementó.</p>
+            <p>Por su parte, Mauricio Bermúdez, de la emisora KCH, fue contundente al firmar que “es decepcionante” la decisión tomada por el club. “Es decepcionante porque se hablaba de una directiva que buscaba recuperar el estilo ofensivo histórico del equipo, y Nasuti y Vicente Sánchez son todo lo contrario. Si bien Emelec ha mejorado en los últimos partidos, son mejorías en la elección de perfiles, un equipo más compacto, que era lo mínimo para cualquier cuerpo técnico”, analizó Bermúdez.</p>
+            <p>“Pasar de nombres como Arias, Robatto, Rabanal a Nasuti, de verdad que es un bajón cualitativo gigantesco. No solo en recorrido sino en la pizarra, que es lo importante. Debió verse Emelec en el espejo de Barcelona SC cuando se equivocó con Segundo Castillo y ver que el fútbol moderno va más allá de tener buenos jugadores o empatía con el grupo”, analizó.</p>
+            <p>Por otro lado, el comunicador no ve posible que Emelec pueda meterse a la Copa Libertadores. “Las exigencias del club son elevadas. Creía que por plantel, por lo bien que se reforzó a inicios de año y sé que se va a reforzar más, pensé que estaba para pelear un cupo a la Copa Libertadores, pero esta decisión genera dudas”, sentenció.</p>
+        </div>
+    </main>
+
+    <main id="noticia-13" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+        <h1>Bélgica golea a Estados Unidos y confirma su candidatura al título</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de julio de 2026</span>
+        </div>
+        <img src="001Noticia13 - Noticia 13 - Bélgica golea a Estados Unidos y confirma su candidatura al título.jpg" onerror="this.onerror=null; this.src='001Noticia13.jpg';" alt="Bélgica golea a Estados Unidos y confirma su candidatura al título" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Bélgica dio un golpe de autoridad en los octavos de final del Mundial 2026 al vencer con un contundente 4-1 a Estados Unidos, demostrando todo su potencial ofensivo y asegurando su lugar entre las ocho mejores selecciones del torneo.</p>
+            <p>El compromiso comenzó con mucha intensidad y ambos equipos buscaron el arco rival desde los primeros minutos. Estados Unidos logró mantenerse en partido e incluso descontó para ilusionar a su afición, pero la respuesta de Bélgica fue inmediata.</p>
+            <p>Con un juego rápido, preciso y muy efectivo en ataque, los europeos ampliaron la diferencia y terminaron sellando una victoria contundente. Bélgica enfrentará a España en los cuartos de final, en uno de los partidos más esperados de esta Copa del Mundo.</p>
+        </div>
+    </main>
+
+    <main id="noticia-14" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+        <h1>Colombia se despide del Mundial 2026 tras caer en penales ante Suiza</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de julio de 2026</span>
+        </div>
+        <img src="001Noticia14 - Noticia 14 - Colombia se despide del Mundial 2026 tras caer en penales ante Suiza.jpg" onerror="this.onerror=null; this.src='001Noticia14.jpg';" alt="Colombia se despide del Mundial 2026 tras caer en penales ante Suiza" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>El sueño de Colombia en el Mundial 2026 llegó a su final. La selección cafetera quedó eliminada en los octavos de final luego de caer en la tanda de penales frente a una sólida selección de Suiza, en uno de los encuentros más emocionantes de esta fase del torneo.</p>
+            <p>Durante los 120 minutos de juego, ambos equipos ofrecieron un partido muy parejo, con pocas ocasiones claras de gol y un gran trabajo defensivo. Colombia intentó imponer su estilo de juego y generó varias oportunidades, pero no logró romper el empate gracias a las destacadas intervenciones del arquero suizo.</p>
+            <p>Con el marcador igualado 0-0, todo se definió desde los once pasos. En la tanda de penales, Suiza mostró mayor efectividad y se llevó la victoria por 4-3, asegurando su clasificación a los cuartos de final. Colombia se despide del Mundial con una actuación digna y dejando buenas sensaciones, aunque con la tristeza de haber estado muy cerca de seguir haciendo historia.</p>
+        </div>
+    </main>
+
+    <main id="noticia-15" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+        <h1>Ecuador hace historia y elimina a Alemania del Mundial 2026</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de julio de 2026</span>
+        </div>
+        <img src="001Noticia15 - Noticia 15 - Ecuador hace historia y elimina a Alemania del Mundial 2026.jpg" onerror="this.onerror=null; this.src='001Noticia15.jpg';" alt="Ecuador hace historia y elimina a Alemania del Mundial 2026" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>La selección ecuatoriana protagonizó una de las mayores sorpresas del Mundial 2026 al derrotar a Alemania y conseguir una histórica clasificación a los octavos de final. La Tri mostró carácter, orden y mucha personalidad durante todo el encuentro, logrando imponerse ante una de las selecciones más tradicionales del fútbol mundial.</p>
+            <p>Desde el pitazo inicial, Ecuador demostró que no iba a conformarse con defender el resultado. Con un juego intenso y aprovechando cada oportunidad, logró superar a la selección alemana y escribir una página inolvidable para el fútbol ecuatoriano.</p>
+            <p>Tras el histórico triunfo, la emoción se trasladó a las calles del país. Miles de aficionados salieron a celebrar con banderas, camisetas y caravanas de vehículos. En ciudades como Quito, Guayaquil, Cuenca, Ambato y otras provincias, las principales avenidas se llenaron de hinchas que festejaron la victoria que quedará para siempre en la memoria del fútbol ecuatoriano.</p>
+        </div>
+    </main>
+
+    <main id="noticia-16" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+        <h1>El Mundial 2026 comienza a despedir a sus grandes leyendas</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de julio de 2026</span>
+        </div>
+        <img src="001Noticia16 - Noticia 16 - El Mundial 2026 comienza a despedir a sus grandes leyendas.jpg" onerror="this.onerror=null; this.src='001Noticia16.jpg';" alt="El Mundial 2026 comienza a despedir a sus grandes leyendas" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>El avance del Mundial 2026 ha dejado fuera de competencia a varias de las grandes figuras del fútbol internacional. Selecciones históricas y jugadores que marcaron una época se despidieron del torneo, dando paso a una nueva generación que busca escribir su propia historia.</p>
+            <p>Las eliminaciones de varias potencias dejaron claro que en esta Copa del Mundo no existen rivales fáciles y que cualquier detalle puede cambiar el destino de un partido. El escenario mundialista comenzó a decir adiós a algunos de los nombres más importantes del fútbol.</p>
+            <p>Sin embargo, la mayor tensión se vivió con Lionel Messi y la selección argentina. En los octavos de final frente a Egipto, la Albiceleste estuvo muy cerca de quedar eliminada y, por momentos, parecía que el último Mundial del capitán argentino llegaba a su final.</p>
+            <p>Cuando todo parecía perdido, apareció el carácter del campeón. Argentina reaccionó, logró remontar el marcador y consiguió una victoria por 3-2 que mantiene vivo el sueño mundialista de Messi. Mientras muchas leyendas ya se despidieron del torneo, el capitán argentino continúa en carrera con la ilusión de seguir haciendo historia y luchar por una nueva Copa del Mundo.</p>
+        </div>
+    </main>
+
+    <main id="noticia-17" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+        <h1>España elimina a Portugal y continúa su camino hacia el título</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de julio de 2026</span>
+        </div>
+        <img src="001Noticia17 - Noticia 17 - España elimina a Portugal y continúa su camino hacia el título.jpg" onerror="this.onerror=null; this.src='001Noticia17.jpg';" alt="España elimina a Portugal y continúa su camino hacia el título" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>España logró su clasificación a los cuartos de final del Mundial 2026 luego de derrotar por 1-0 a Portugal en un intenso duelo ibérico que mantuvo la emoción hasta el pitazo final.</p>
+            <p>Desde el inicio del encuentro, ambas selecciones buscaron el control del balón y generaron constantes llegadas al área rival. Sin embargo, fue España quien aprovechó una de sus mejores oportunidades para marcar el único gol del compromiso y tomar ventaja en el marcador.</p>
+            <p>Portugal intentó reaccionar durante la segunda mitad y presionó en busca del empate, pero la defensa española respondió con firmeza y evitó cualquier posibilidad de remontada. Con este resultado, España mantiene vivo su sueño de conquistar una nueva Copa del Mundo, mientras que Portugal pone fin a su participación tras una destacada campaña.</p>
+        </div>
+    </main>
+
+    <main id="noticia-18" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+        <h1>Todo listo para los cuartos de final del Mundial 2026</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de julio de 2026</span>
+        </div>
+        <img src="001Noticia18 - Noticia 18 - Todo listo para los cuartos de final del Mundial 2026.jpg" onerror="this.onerror=null; this.src='001Noticia18.jpg';" alt="Todo listo para los cuartos de final del Mundial 2026" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Los cuartos de final del Mundial 2026 quedaron definidos y la emoción aumenta mientras el torneo entra en su etapa decisiva. Solo ocho selecciones continúan con vida y todas sueñan con levantar el trofeo más importante del fútbol mundial.</p>
+            <p>Los enfrentamientos prometen grandes emociones. Francia se enfrentará a Marruecos en un duelo entre uno de los favoritos y la gran revelación del campeonato. España chocará con Bélgica en un partido que reúne a dos de las selecciones con mejor rendimiento hasta el momento.</p>
+            <p>Por su parte, Noruega buscará seguir sorprendiendo cuando enfrente a Inglaterra, mientras que Argentina tendrá un complicado desafío frente a Suiza, que viene de eliminar a Colombia desde el punto penal.</p>
+            <p>Cada uno de estos encuentros será una auténtica final. Un error puede marcar la diferencia entre avanzar a semifinales o despedirse definitivamente del sueño mundialista.</p>
+        </div>
+    </main>
+
+    <main id="noticia-19" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+        <h1>México será el rival de Ecuador en los octavos de final</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de julio de 2026</span>
+        </div>
+        <img src="001Noticia19 - Noticia 19 - México será el rival de Ecuador en los octavos de final.jpg" onerror="this.onerror=null; this.src='001Noticia19.jpg';" alt="México será el rival de Ecuador en los octavos de final" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>Luego de conseguir una histórica clasificación tras eliminar a Alemania, Ecuador conoce a su rival en el Mundial 2026. La selección ecuatoriana enfrentará a México en los octavos de final, en un partido que promete grandes emociones y que definirá cuál de los dos equipos avanzará a la siguiente ronda.</p>
+            <p>El combinado ecuatoriano llega con la motivación en lo más alto después de sorprender al mundo con su gran actuación, mientras que México buscará hacer valer su experiencia en este tipo de instancias para seguir avanzando en la Copa del Mundo.</p>
+            <p>La expectativa crece entre los aficionados de ambos países, ya que será un enfrentamiento de alto nivel donde no hay margen para el error. Ecuador buscará seguir haciendo historia y acercarse por primera vez a los cuartos de final de un Mundial.</p>
+        </div>
+    </main>
+
+    <main id="noticia-20" class="articulo-completo oculto">
+        <button class="btn-volver" onclick="mostrarInicio()">← Volver al inicio</button>
+        <div class="meta-info"><span class="etiqueta">Deportes</span><span class="fecha">8 de julio de 2026</span></div>
+        <h1>México derrota a Ecuador y termina el sueño mundialista de La Tri</h1>
+        <div class="autor-barra">
+            <span>POR: <span class="autor-nombre">Redacción Pulso Deportivo</span></span>
+            <span class="autor-separador">•</span>
+            <span>8 de julio de 2026</span>
+        </div>
+        <img src="001Noticia20 - Noticia 20 - México derrota a Ecuador y termina el sueño mundialista de La Tri.jpg" onerror="this.onerror=null; this.src='001Noticia20.jpg';" alt="México derrota a Ecuador y termina el sueño mundialista de La Tri" class="imagen-principal">
+        <div class="cuerpo-texto">
+            <p>El sueño de Ecuador en el Mundial 2026 llegó a su fin. La selección ecuatoriana cayó por 2-0 ante México en los octavos de final y quedó eliminada de la Copa del Mundo, poniendo fin a una campaña que ilusionó a todo un país.</p>
+            <p>Durante gran parte del encuentro, La Tri luchó por mantenerse en partido y generó algunas oportunidades para abrir el marcador. Sin embargo, México fue más efectivo en los momentos decisivos y aprovechó sus opciones para quedarse con la victoria y asegurar su clasificación a los cuartos de final.</p>
+            <p>A pesar de la eliminación, Ecuador deja una imagen muy positiva en el torneo. La histórica victoria frente a Alemania y el compromiso mostrado en cada partido despertaron nuevamente la ilusión de millones de ecuatorianos. Aunque el sueño mundialista terminó, La Tri se despide con la frente en alto y con una generación de futbolistas que ilusiona de cara al futuro.</p>
+        </div>
+    </main>
+
+    <footer id="contacto">
+        <div class="footer-caja">
+            <div class="logo-footer">
+                <img src="LOGO PULSO DEPORTIVO.png" alt="Pulso Deportivo" class="imagen-logo-footer">
+            </div>
+            <div class="enlaces-footer">
+                <a href="#">AVISO LEGAL</a>
+                <a href="#">CONTACTO</a>
+                <a href="#">PUBLICIDAD</a>
+                <a href="#">PRIVACIDAD</a>
+                <a href="https://www.tiktok.com/@pulsodeportivok?_r=1&_t=ZS-97rUTL13u6f" target="_blank" rel="noopener noreferrer">TIKTOK</a>
+                <a href="https://www.instagram.com/pulsodeportivoec_?igsh=YWdoY3lnZWVkNWs4&utm_source=qr" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
+                <a href="https://x.com/pulsodeportivok?s=11" target="_blank" rel="noopener noreferrer">X</a>
+                <a href="https://youtube.com/@pulsodeportivo-p2l?si=h51pBJMrXLp3NOX0" target="_blank" rel="noopener noreferrer">YOUTUBE</a>
+            </div>
+            <div class="copy-footer">
+                &copy; 2026 PULSO DEPORTIVO — PERIODISMO DE CALLE
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function marcarMenuActivo(elemento) {
+            document.querySelectorAll('nav a').forEach(function(link) {
+                link.classList.remove('activo');
+            });
+
+            if (elemento) {
+                elemento.classList.add('activo');
+            }
+        }
+
+        function mostrarNoticia(idNoticia, event) {
+            if(event) {
+                event.preventDefault();
+            }
+
+            marcarMenuActivo(null);
+            document.getElementById('vista-inicio').classList.add('oculto');
+
+            let todasLasNoticias = document.querySelectorAll('.articulo-completo');
+            todasLasNoticias.forEach(function(noticia) {
+                noticia.classList.add('oculto');
+            });
+
+            document.getElementById(idNoticia).classList.remove('oculto');
+
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function mostrarInicio(hacerScroll = true) {
+            let todasLasNoticias = document.querySelectorAll('.articulo-completo');
+            todasLasNoticias.forEach(function(noticia) {
+                noticia.classList.add('oculto');
+            });
+
+            document.getElementById('vista-inicio').classList.remove('oculto');
+
+            if (hacerScroll) {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function irASeccion(idSeccion, elemento) {
+            mostrarInicio(false);
+            marcarMenuActivo(elemento);
+
+            const seccion = document.getElementById(idSeccion);
+            if (seccion) {
+                seccion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    </script>
+</body>
+</html>
